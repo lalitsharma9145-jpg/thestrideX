@@ -1,0 +1,287 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>TheStrideX.com</title>
+
+<style>
+
+body{
+font-family: Arial;
+margin:0;
+background:#f4f4f4;
+}
+
+/* HEADER */
+
+.header{
+background:black;
+color:white;
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:15px 40px;
+}
+
+.logo{
+font-size:24px;
+font-weight:bold;
+}
+
+.search-box input{
+padding:8px;
+width:250px;
+}
+
+.search-box button{
+padding:8px 12px;
+background:red;
+color:white;
+border:none;
+cursor:pointer;
+}
+
+.user-menu a{
+color:white;
+margin-left:15px;
+text-decoration:none;
+}
+
+/* NAVIGATION */
+
+nav{
+background:#333;
+}
+
+nav ul{
+display:flex;
+justify-content:center;
+list-style:none;
+margin:0;
+padding:0;
+}
+
+nav ul li a{
+color:white;
+padding:15px 20px;
+display:block;
+text-decoration:none;
+}
+
+nav ul li a:hover{
+background:red;
+}
+
+/* HERO */
+
+.hero{
+text-align:center;
+padding:50px;
+background:white;
+}
+
+/* PRODUCTS */
+
+.products{
+display:flex;
+justify-content:center;
+flex-wrap:wrap;
+gap:25px;
+padding:40px;
+}
+
+.card{
+background:white;
+padding:20px;
+width:220px;
+border-radius:10px;
+box-shadow:0 0 10px rgba(0,0,0,0.15);
+text-align:center;
+transition:0.3s;
+}
+
+.card:hover{
+transform:scale(1.05);
+}
+
+.card img{
+width:200px;
+height:200px;
+object-fit:cover;
+}
+
+.price{
+color:red;
+font-size:18px;
+font-weight:bold;
+}
+
+button{
+background:red;
+color:white;
+border:none;
+padding:10px 15px;
+cursor:pointer;
+border-radius:5px;
+}
+
+button:hover{
+background:black;
+}
+
+/* SALE */
+
+.sale{
+background:#fff3f3;
+padding:40px;
+text-align:center;
+}
+
+/* CONTACT */
+
+.contact{
+padding:40px;
+text-align:center;
+background:white;
+}
+
+/* FOOTER */
+
+footer{
+background:black;
+color:white;
+text-align:center;
+padding:15px;
+}
+
+</style>
+
+<script>
+
+function addToCart(product){
+alert(product + " added to cart!");
+}
+
+</script>
+
+</head>
+
+<body>
+
+<!-- HEADER -->
+
+<header class="header">
+
+<div class="logo">TheStrideX</div>
+
+<div class="search-box">
+<input type="text" placeholder="Search shoes, brands & more">
+<button>Search</button>
+</div>
+
+<div class="user-menu">
+<a href="#">Sign In</a>
+<a href="#">Cart</a>
+</div>
+
+</header>
+
+<!-- NAVBAR -->
+
+<nav>
+<ul>
+<li><a href="#">Home</a></li>
+<li><a href="#">Men</a></li>
+<li><a href="#">Women</a></li>
+<li><a href="#">Sneakers</a></li>
+<li><a href="#">Sandals</a></li>
+<li><a href="#">Accessories</a></li>
+<li><a href="#">Brands</a></li>
+<li><a href="#">Deals</a></li>
+</ul>
+</nav>
+
+<!-- HERO SECTION -->
+
+<section class="hero">
+
+<h2>Welcome to TheStrideX.com</h2>
+
+<p>
+Discover stylish and comfortable shoes for men and women.
+High quality footwear at affordable prices.
+</p>
+
+<img src="shoes.jpg" width="350">
+
+</section>
+
+<!-- TRENDING PRODUCTS -->
+
+<h2 style="text-align:center">🔥 Trending Shoes</h2>
+
+<section class="products">
+
+<div class="card">
+<img src="sport.jpg">
+<h3>Running Shoes</h3>
+<p class="price">₹1200</p>
+<button onclick="addToCart('Running Shoes')">Add to Cart</button>
+</div>
+
+<div class="card">
+<img src="casual.jpg">
+<h3>Casual Sneakers</h3>
+<p class="price">₹1500</p>
+<button onclick="addToCart('Casual Sneakers')">Add to Cart</button>
+</div>
+
+<div class="card">
+<img src="men.jpg">
+<h3>Men Sports Shoes</h3>
+<p class="price">₹1999</p>
+<button onclick="addToCart('Men Sports Shoes')">Add to Cart</button>
+</div>
+
+<div class="card">
+<img src="women.webp">
+<h3>Women Stylish Shoes</h3>
+<p class="price">₹1799</p>
+<button onclick="addToCart('Women Stylish Shoes')">Add to Cart</button>
+</div>
+
+</section>
+
+<!-- SALE -->
+
+<section class="sale">
+
+<h2>🔥 Hot Sale</h2>
+<p>Flat 50% OFF on selected shoes</p>
+
+</section>
+
+<!-- CONTACT -->
+
+<section class="contact">
+
+<h2>Contact Us</h2>
+
+<p>Email: theshoes@gmail.com</p>
+<p>Phone: +91 9876543210</p>
+<p>Address: New Delhi, India</p>
+
+</section>
+
+<!-- FOOTER -->
+
+<footer>
+
+<p>© 2026 TheStrideX.com | All Rights Reserved</p>
+
+</footer>
+
+</body>
+</html>
+```
