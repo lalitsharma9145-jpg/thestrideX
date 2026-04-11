@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SoleKart — Premium Indian Footwear</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Rethink+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwindcss.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Rethink Sans', 'sans-serif'] },
+          colors: {
+            brand: { bg: '#0A0618', light: '#F8F6FF', title: '#0D0C54', body: '#40406A', muted: '#B8B1D8', accent: '#6145FF', hover: '#5035e4', border: '#EBE7FF', star: '#FFB648', link: '#BA9DFF' }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Rethink Sans', sans-serif; background: #F8F6FF; color: #40406A; }
+    .text-gradient { background-image: linear-gradient(45deg, #6145FF, #BA9DFF); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .glass { background: rgba(154, 145, 255, 0.1); backdrop-filter: blur(12px); border: 1px solid rgba(201, 196, 255, 0.2); }
+    .card-shadow { box-shadow: 0 4px 8px rgba(0,0,0,0.06), 0 2px 4px rgba(0,0,0,0.04); }
+    .card-shadow-lg { box-shadow: 0 20px 40px rgba(77, 145, 225, 0.15); }
+    .hero-img-shadow { box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); }
+    .img-hover { transition: transform 500ms ease; }
+    .img-hover:hover { transform: scale(1.05); }
+    .btn-hover { transition: background-color 150ms ease; }
+    .btn-hover:hover { background-color: #5035e4; }
+    .card-hover { transition: transform 300ms ease, box-shadow 300ms ease; }
+    .card-hover:hover { transform: translateY(-4px); box-shadow: 0 25px 50px -12px rgba(0,0,0,0.15); }
+    .fade-mask { mask-image: linear-gradient(to bottom, transparent, black 15%, black 85%, transparent); -webkit-mask-image: linear-gradient(to bottom, transparent, black 15%, black 85%, transparent); }
+    html { scroll-behavior: smooth; }
+    .cart-badge { position: absolute; top: -6px; right: -6px; background: #6145FF; color: #fff; font-size: 11px; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; }
+    .toast { animation: slideIn 0.4s ease, fadeOut 0.4s ease 2.2s forwards; }
+    @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+    @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; pointer-events: none; } }
+    .modal-overlay { animation: fadeIn 0.3s ease; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    .size-btn.active { background: #6145FF; color: #fff; border-color: #6145FF; }
+    .qty-btn { transition: background 150ms; }
+    .qty-btn:hover { background: #EBE7FF; }
+    input:focus, select:focus, textarea:focus { outline: none; border-color: #6145FF; box-shadow: 0 0 0 3px rgba(97,69,255,0.15); }
+  </style>
+</head>
+<body>
+
+  <!-- Toast Container -->
+  <div id="toastContainer" class="fixed top-24 right-4 z-[100] flex flex-col gap-2"></div>
+
+  <!-- NAVBAR -->
+  <nav class="fixed top-0 w-full z-50 bg-brand-bg/95 backdrop-blur-md border-b border-[rgba(154,145,255,0.1)]">
+    <div class="max-w-[1346px] mx-auto px-6 py-4 flex items-center justify-between">
+      <a href="#" class="flex items-center gap-2">
+        <span class="iconify text-brand-accent text-3xl" data-icon="mdi:shoe-sneaker"></span>
+        <span class="text-white text-xl font-bold tracking-tight">SoleKart</span>
+      </a>
+      <div class="hidden md:flex items-center gap-8">
+        <a href="#collection" class="text-brand-muted hover:text-white transition-colors font-medium">Collection</a>
+        <a href="#categories" class="text-brand-muted hover:text-white transition-colors font-medium">Categories</a>
+        <a href="#customers" class="text-brand-muted hover:text-white transition-colors font-medium">Customers</a>
+        <a href="#reviews" class="text-brand-muted hover:text-white transition-colors font-medium">Reviews</a>
+      </div>
+      <div class="flex items-center gap-4">
+        <button onclick="openCart()" class="relative text-white hover:text-brand-accent transition-colors">
+          <span class="iconify text-2xl" data-icon="mdi:cart-outline"></span>
+          <span id="cartCount" class="cart-badge hidden">0</span>
+        </button>
+        <a href="#collection" class="hidden sm:inline-flex bg-brand-accent text-white font-semibold py-3 px-8 rounded-full btn-hover">Shop Now</a>
+        <button onclick="toggleMobileMenu()" class="md:hidden text-white">
+          <span class="iconify text-2xl" data-icon="mdi:menu"></span>
+        </button>
+      </div>
+    </div>
+    <!-- Mobile Menu -->
+    <div id="mobileMenu" class="hidden md:hidden border-t border-[rgba(154,145,255,0.1)] bg-brand-bg">
+      <div class="px-6 py-4 flex flex-col gap-4">
+        <a href="#collection" onclick="toggleMobileMenu()" class="text-brand-muted hover:text-white transition-colors font-medium">Collection</a>
+        <a href="#categories" onclick="toggleMobileMenu()" class="text-brand-muted hover:text-white transition-colors font-medium">Categories</a>
+        <a href="#customers" onclick="toggleMobileMenu()" class="text-brand-muted hover:text-white transition-colors font-medium">Customers</a>
+        <a href="#reviews" onclick="toggleMobileMenu()" class="text-brand-muted hover:text-white transition-colors font-medium">Reviews</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="bg-brand-bg pt-32 pb-20 overflow-hidden">
+    <div class="max-w-[1346px] mx-auto px-6 flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
+      <div class="flex-1 text-center lg:text-left">
+        <div class="inline-flex items-center gap-2 glass rounded-full px-4 py-2 mb-6">
+          <span class="iconify text-brand-accent" data-icon="mdi:star"></span>
+          <span class="text-brand-muted text-sm font-medium">India's #1 Handcrafted Footwear</span>
+        </div>
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-semibold text-white leading-[1.08] tracking-tight mb-6">
+          Walk in <span class="text-gradient">Tradition</span>, Step with Style
+        </h1>
+        <p class="text-brand-muted text-lg lg:text-xl leading-relaxed mb-8 max-w-xl mx-auto lg:mx-0">
+          Discover authentic Indian handcrafted shoes — from royal Juttis to classic Kolhapuris. Every pair tells a story of heritage and artisanship.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+          <a href="#collection" class="bg-brand-accent text-white font-semibold py-4 px-10 rounded-full btn-hover text-center">Explore Collection</a>
+          <a href="#customers" class="border border-brand-muted text-white font-semibold py-4 px-10 rounded-full hover:bg-white/5 transition-colors text-center">See Customers</a>
+        </div>
+        <div class="flex items-center gap-8 mt-10 justify-center lg:justify-start">
+          <div><span class="text-3xl font-bold text-white">50K+</span><p class="text-brand-muted text-sm">Happy Customers</p></div>
+          <div class="w-px h-10 bg-brand-muted/30"></div>
+          <div><span class="text-3xl font-bold text-white">200+</span><p class="text-brand-muted text-sm">Unique Designs</p></div>
+          <div class="w-px h-10 bg-brand-muted/30"></div>
+          <div><span class="text-3xl font-bold text-white">4.9</span><p class="text-brand-muted text-sm">Star Rating</p></div>
+        </div>
+      </div>
+      <div class="flex-1 relative">
+        <div class="relative hero-img-shadow rounded-3xl overflow-hidden">
+          <img src="https://images.unsplash.com/photo-1614252235316-8c857d38b5f4?w=600&h=700&fit=crop" alt="Indian Handcrafted Shoes" class="w-full h-[400px] sm:h-[500px] lg:h-[600px] object-cover img-hover" />
+          <div class="absolute inset-0 bg-gradient-to-t from-brand-bg/60 to-transparent"></div>
+        </div>
+        <div class="absolute -bottom-4 -left-4 sm:bottom-8 sm:-left-8 glass rounded-2xl p-4 flex items-center gap-3">
+          <div class="w-12 h-12 bg-brand-accent/20 rounded-full flex items-center justify-center">
+            <span class="iconify text-brand-accent text-xl" data-icon="mdi:truck-delivery-outline"></span>
+          </div>
+          <div>
+            <p class="text-white font-semibold text-sm">Free Delivery</p>
+            <p class="text-brand-muted text-xs">All over India</p>
+          </div>
+        </div>
+        <div class="absolute -top-4 -right-4 sm:top-8 sm:-right-8 glass rounded-2xl p-4 flex items-center gap-3">
+          <div class="w-12 h-12 bg-brand-star/20 rounded-full flex items-center justify-center">
+            <span class="iconify text-brand-star text-xl" data-icon="mdi:hand-heart-outline"></span>
+          </div>
+          <div>
+            <p class="text-white font-semibold text-sm">100% Handmade</p>
+            <p class="text-brand-muted text-xs">By Artisans</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TRUSTED BY -->
+  <section class="bg-brand-light py-10 border-b border-brand-border">
+    <div class="max-w-[1346px] mx-auto px-6">
+      <p class="text-center text-brand-body/60 text-sm font-medium uppercase tracking-widest mb-8">Featured In</p>
+      <div class="flex flex-wrap items-center justify-center gap-8 sm:gap-14 opacity-50">
+        <span class="text-2xl font-bold text-brand-title tracking-tight">The Hindu</span>
+        <span class="text-2xl font-bold text-brand-title tracking-tight">VOGUE</span>
+        <span class="text-2xl font-bold text-brand-title tracking-tight">NDTV</span>
+        <span class="text-2xl font-bold text-brand-title tracking-tight">India Today</span>
+        <span class="text-2xl font-bold text-brand-title tracking-tight">Femina</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- CATEGORIES -->
+  <section id="categories" class="bg-brand-light py-24">
+    <div class="max-w-[72rem] mx-auto px-6">
+      <div class="text-center mb-16">
+        <span class="inline-block bg-white text-brand-accent text-xs font-bold uppercase py-1.5 px-4 rounded-full border border-brand-border mb-4">Categories</span>
+        <h2 class="text-3xl sm:text-4xl lg:text-5xl font-semibold text-brand-title tracking-tight mb-4">Explore Indian Shoe Styles</h2>
+        <p class="text-brand-body text-lg max-w-2xl mx-auto">From weddings to daily wear, find the perfect Indian footwear for every occasion.</p>
+      </div>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="bg-white rounded-3xl overflow-hidden card-hover card-shadow cursor-pointer" onclick="filterProducts('jutti')">
+          <div class="overflow-hidden h-52"><img src="https://images.unsplash.com/photo-1603808033192-082d6919d3e1?w=400&h=300&fit=crop" alt="Juttis" class="w-full h-full object-cover img-hover" /></div>
+          <div class="p-6"><h3 class="text-lg font-semibold text-brand-title mb-1">Mojaris & Juttis</h3><p class="text-brand-body text-sm">Punjabi & Rajasthani handcrafted</p></div>
+        </div>
+        <div class="bg-white rounded-3xl overflow-hidden card-hover card-shadow cursor-pointer" onclick="filterProducts('kolhapuri')">
+          <div class="overflow-hidden h-52"><img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&h=300&fit=crop" alt="Kolhapuris" class="w-full h-full object-cover img-hover" /></div>
+          <div class="p-6"><h3 class="text-lg font-semibold text-brand-title mb-1">Kolhapuri Chappals</h3><p class="text-brand-body text-sm">Classic leather from Maharashtra</p></div>
+        </div>
+        <div class="bg-white rounded-3xl overflow-hidden card-hover card-shadow cursor-pointer" onclick="filterProducts('sandal')">
+          <div class="overflow-hidden h-52"><img src="https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=400&h=300&fit=crop" alt="Sandals" class="w-full h-full object-cover img-hover" /></div>
+          <div class="p-6"><h3 class="text-lg font-semibold text-brand-title mb-1">Ethnic Sandals</h3><p class="text-brand-body text-sm">Festive & wedding wear</p></div>
+        </div>
+        <div class="bg-white rounded-3xl overflow-hidden card-hover card-shadow cursor-pointer" onclick="filterProducts('sneaker')">
+          <div class="overflow-hidden h-52"><img src="https://images.unsplash.com/photo-1600185365926-3a2ce3cdb9eb?w=400&h=300&fit=crop" alt="Indo-Western" class="w-full h-full object-cover img-hover" /></div>
+          <div class="p-6"><h3 class="text-lg font-semibold text-brand-title mb-1">Indo-Western</h3><p class="text-brand-body text-sm">Fusion style for modern India</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRODUCT COLLECTION -->
+  <section id="collection" class="bg-brand-light py-24">
+    <div class="max-w-[1346px] mx-auto px-6">
+      <div class="text-center mb-12">
+        <span class="inline-block bg-white text-brand-accent text-xs font-bold uppercase py-1.5 px-4 rounded-full border border-brand-border mb-4">Our Collection</span>
+        <h2 class="text-3xl sm:text-4xl lg:text-5xl font-semibold text-brand-title tracking-tight mb-4">Handpicked for You</h2>
+        <p class="text-brand-body text-lg max-w-2xl mx-auto">Each pair is handcrafted by skilled Indian artisans using traditional techniques.</p>
+      </div>
+      <!-- Filter Tabs -->
+      <div class="flex flex-wrap justify-center gap-3 mb-12">
+        <button onclick="filterProducts('all')" class="filter-btn active-filter bg-brand-accent text-white font-semibold py-2.5 px-6 rounded-full text-sm transition-all" data-filter="all">All</button>
+        <button onclick="filterProducts('jutti')" class="filter-btn bg-white text-brand-body font-semibold py-2.5 px-6 rounded-full text-sm border border-brand-border hover:border-brand-accent transition-all" data-filter="jutti">Juttis</button>
+        <button onclick="filterProducts('kolhapuri')" class="filter-btn bg-white text-brand-body font-semibold py-2.5 px-6 rounded-full text-sm border border-brand-border hover:border-brand-accent transition-all" data-filter="kolhapuri">Kolhapuri</button>
+        <button onclick="filterProducts('sandal')" class="filter-btn bg-white text-brand-body font-semibold py-2.5 px-6 rounded-full text-sm border border-brand-border hover:border-brand-accent transition-all" data-filter="sandal">Sandals</button>
+        <button onclick="filterProducts('sneaker')" class="filter-btn bg-white text-brand-body font-semibold py-2.5 px-6 rounded-full text-sm border border-brand-border hover:border-brand-accent transition-all" data-filter="sneaker">Indo-Western</button>
+      </div>
+      <!-- Products Grid -->
+      <div id="productsGrid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- Products will be injected by JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- WHY CHOOSE US -->
+  <section class="bg-white py-24">
+    <div class="max-w-[1062px] mx-auto px-6">
+      <div class="text-center mb-16">
+        <span class="inline-block bg-brand-light text-brand-accent text-xs font-bold uppercase py-1.5 px-4 rounded-full border border-brand-border mb-4">Why SoleKart</span>
+        <h2 class="text-3xl sm:text-4xl lg:text-5xl font-semibold text-brand-title tracking-tight mb-4">Crafted with Love, Delivered with Care</h2>
+      </div>
+      <div class="grid md:grid-cols-2 gap-x-12 gap-y-10">
+        <div class="flex gap-4">
+          <div class="w-12 h-12 shrink-0 bg-brand-light rounded-2xl flex items-center justify-center"><span class="iconify text-brand-accent text-2xl" data-icon="mdi:hand-back-right-outline"></span></div>
+          <div><h4 class="text-lg font-semibold text-brand-title mb-1">100% Handmade</h4><p class="text-brand-body">Every shoe is stitched by master artisans from Rajasthan, Punjab, and Maharashtra.</p></div>
+        </div>
+        <div class="flex gap-4">
+          <div class="w-12 h-12 shrink-0 bg-brand-light rounded-2xl flex items-center justify-center"><span class="iconify text-brand-accent text-2xl" data-icon="mdi:leaf"></span></div>
+          <div><h4 class="text-lg font-semibold text-brand-title mb-1">Eco-Friendly Materials</h4><p class="text-brand-body">Vegetable-tanned leather, natural dyes, and sustainable sourcing.</p></div>
+        </div>
+        <div class="flex gap-4">
+          <div class="w-12 h-12 shrink-0 bg-brand-light rounded-2xl flex items-center justify-center"><span class="iconify text-brand-accent text-2xl" data-icon="mdi:refresh"></span></div>
+          <div><h4 class="text-lg font-semibold text-brand-title mb-1">Easy Returns</h4><p class="text-brand-body">7-day hassle-free return policy. No questions asked.</p></div>
+        </div>
+        <div class="flex gap-4">
+          <div class="w-12 h-12 shrink-0 bg-brand-light rounded-2xl flex items-center justify-center"><span class="iconify text-brand-accent text-2xl" data-icon="mdi:shield-check-outline"></span></div>
+          <div><h4 class="text-lg font-semibold text-brand-title mb-1">Quality Guaranteed</h4><p class="text-brand-body">Each pair passes through 15 quality checks before dispatch.</p></div>
+        </div>
+        <div class="flex gap-4">
+          <div class="w-12 h-12 shrink-0 bg-brand-light rounded-2xl flex items-center justify-center"><span class="iconify text-brand-accent text-2xl" data-icon="mdi:truck-fast-outline"></span></div>
+          <div><h4 class="text-lg font-semibold text-brand-title mb-1">Fast Pan-India Delivery</h4><p class="text-brand-body">Delivered in 3–5 business days across 28,000+ pin codes.</p></div>
+        </div>
+        <div class="flex gap-4">
+          <div class="w-12 h-12 shrink-0 bg-brand-light rounded-2xl flex items-center justify-center"><span class="iconify text-brand-accent text-2xl" data-icon="mdi:currency-inr"></span></div>
+          <div><h4 class="text-lg font-semibold text-brand-title mb-1">Fair Pricing</h4><p class="text-brand-body">Direct from artisans — no middlemen, so you get the best price.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CUSTOMERS USING -->
+  <section id="customers" class="bg-brand-bg py-24">
+    <div class="max-w-[1346px] mx-auto px-6">
+      <div class="text-center mb-16">
+        <span class="inline-block glass text-brand-accent text-xs font-bold uppercase py-1.5 px-4 rounded-full mb-4">Our Community</span>
+        <h2 class="text-3xl sm:text-4xl lg:text-5xl font-semibold text-white tracking-tight mb-4">Customers Wearing SoleKart</h2>
+        <p class="text-brand-muted text-lg max-w-2xl mx-auto">Real people, real style. See how our customers style their Indian footwear.</p>
+      </div>
+      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        <div class="relative rounded-2xl overflow-hidden group h-64 lg:h-80">
+          <img src="https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=400&h=500&fit=crop" alt="Customer wearing Juttis" class="w-full h-full object-cover img-hover" />
+          <div class="absolute inset-0 bg-gradient-to-t from-brand-bg/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4"><p class="text-white text-sm font-medium">Priya — Wearing Royal Juttis at a Wedding</p></div>
+        </div>
+        <div class="relative rounded-2xl overflow-hidden group h-64 lg:h-80">
+          <img src="https://images.unsplash.com/photo-1539109136881-3be0616acf4b?w=400&h=500&fit=crop" alt="Customer with Kolhapuris" class="w-full h-full object-cover img-hover" />
+          <div class="absolute inset-0 bg-gradient-to-t from-brand-bg/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4"><p class="text-white text-sm font-medium">Rahul — Daily Kolhapuri Style</p></div>
+        </div>
+        <div class="relative rounded-2xl overflow-hidden group h-64 lg:h-80">
+          <img src="https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=400&h=500&fit=crop" alt="Customer at festival" class="w-full h-full object-cover img-hover" />
+          <div class="absolute inset-0 bg-gradient-to-t from-brand-bg/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4"><p class="text-white text-sm font-medium">Anita — Diwali Festive Look</p></div>
+        </div>
+        <div class="relative rounded-2xl overflow-hidden group h-64 lg:h-80">
+          <img src="https://images.unsplash.com/photo-1618354691373-d851c5c3a990?w=400&h=500&fit=crop" alt="Street style" class="w-full h-full object-cover img-hover" />
+          <div class="absolute inset-0 bg-gradient-to-t from-brand-bg/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4"><p class="text-white text-sm font-medium">Vikram — Indo-Western Fusion</p></div>
+        </div>
+        <div class="relative rounded-2xl overflow-hidden group h-64 lg:h-80">
+          <img src="https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=400&h=500&fit=crop" alt="Ethnic wear" class="w-full h-full object-cover img-hover" />
+          <div class="absolute inset-0 bg-gradient-to-t from-brand-bg/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4"><p class="text-white text-sm font-medium">Meera — Traditional Sandals at Puja</p></div>
+        </div>
+        <div class="relative rounded-2xl overflow-hidden group h-64 lg:h-80">
+          <img src="https://images.unsplash.com/photo-1509631179647-0177331693ae?w=400&h=500&fit=crop" alt="Casual style" class="w-full h-full object-cover img-hover" />
+          <div class="absolute inset-0 bg-gradient-to-t from-brand-bg/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4"><p class="text-white text-sm font-medium">Arjun — Casual Kolhapuri Day Out</p></div>
+        </div>
+        <div class="relative rounded-2xl overflow-hidden group h-64 lg:h-80">
+          <img src="https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=400&h=500&fit=crop" alt="Fashion shot" class="w-full h-full object-cover img-hover" />
+          <div class="absolute inset-0 bg-gradient-to-t from-brand-bg/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4"><p class="text-white text-sm font-medium">Kavya — Sangeet Night Juttis</p></div>
+        </div>
+        <div class="relative rounded-2xl overflow-hidden group h-64 lg:h-80">
+          <img src="https://images.unsplash.com/photo-1585232004423-244e0e6904e3?w=400&h=500&fit=crop" alt="Modern ethnic" class="w-full h-full object-cover img-hover" />
+          <div class="absolute inset-0 bg-gradient-to-t from-brand-bg/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4"><p class="text-white text-sm font-medium">Dev — Office to Evening Transition</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- REVIEWS -->
+  <section id="reviews" class="bg-brand-light py-24">
+    <div class="max-w-[1346px] mx-auto px-6">
+      <div class="text-center mb-16">
+        <span class="inline-block bg-white text-brand-accent text-xs font-bold uppercase py-1.5 px-4 rounded-full border border-brand-border mb-4">Reviews</span>
+        <h2 class="text-3xl sm:text-4xl lg:text-5xl font-semibold text-brand-title tracking-tight mb-4">Loved by Thousands</h2>
+        <p class="text-brand-body text-lg">Don't take our word for it — hear from our customers.</p>
+      </div>
+      <div class="grid md:grid-cols-3 gap-8">
+        <div class="bg-white p-8 rounded-3xl card-shadow card-hover border border-brand-border">
+          <div class="flex gap-1 mb-4">
+            <span class="iconify text-brand-star text-xl" data-icon="mdi:star"></span>
+            <span class="iconify text-brand-star text-xl" data-icon="mdi:star"></span>
+            <span class="iconify text-brand-star text-xl" data-icon="mdi:star"></span>
+            <span class="iconify text-brand-star text-xl" data-icon="mdi:star"></span>
+            <span class="iconify text-brand-star text-xl" data-icon="mdi:star"></span>
+          </div>
+          <p class="text-brand-body mb-6 leading-relaxed">"I wore these Juttis to my sister's wedding and got so many compliments! The embroidery is absolutely stunning and they were surprisingly comfortable for 8 hours."</p>
+          <div class="flex items-center gap-3">
+            <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&h=80&fit=crop&crop=face" alt="Priya Sharma" class="w-12 h-12 rounded-full object-cover" />
+            <div><p class="font-semibold text-brand-title">Priya Sharma</p><p class="text-brand-body text-sm">Delhi</p></div>
+          </div>
+        </div>
+        <div class="bg-white p-8 rounded-3xl card-shadow card-hover border border-brand-border">
+          <div class="flex gap-1 mb-4">
+            <span class="iconify text-brand-star text-xl" data-icon="mdi:star"></span>
+            <span class="iconify text-brand-star text-xl" data-icon="mdi:star"></span>
+            <span class="iconify text-brand-star text-xl" data-icon="mdi:star"></span>
+            <span class="iconify text-brand-star text-xl" data-icon="mdi:star"></span>
+            <span class="iconify text-brand-star text-xl" data-icon="mdi:star"></span>
+          </div>
+          <p class="text-brand-body mb-6 leading-relaxed">"Best Kolhapuris I've ever owned. The leather quality is premium and they mould to your feet perfectly. Ordered 3 more pairs for my family!"</p>
+          <div class="flex items-center gap-3">
+            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&h=80&fit=crop&crop=face" alt="Rajesh Patil" class="w-12 h-12 rounded-full object-cover" />
+            <div><p class="font-semibold text-brand-title">Rajesh Patil</p><p class="text-brand-body text-sm">Pune</p></div>
+          </div>
+        </div>
+        <div class="bg-white p-8 rounded-3xl card-shadow card-hover border border-brand-border">
+          <div class="flex gap-1 mb-4">
+            <span class="iconify text-brand-star text-xl" data-icon="mdi:star"></span>
+            <span class="iconify text-brand-star text-xl" data-icon="mdi:star"></span>
+            <span class="iconify text-brand-star text-xl" data-icon="mdi:star"></span>
+            <span class="iconify text-brand-star text-xl" data-icon="mdi:star"></span>
+            <span class="iconify text-brand-star text-xl" data-icon="mdi:star-half-full"></span>
+          </div>
+          <p class="text-brand-body mb-6 leading-relaxed">"The Indo-Western collection is a game changer. I wear them to the office and for casual outings. Sustainable, stylish, and very Indian. Love it!"</p>
+          <div class="flex items-center gap-3">
+            <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=80&h=80&fit=crop&crop=face" alt="Sneha Reddy" class="w-12 h-12 rounded-full object-cover" />
+            <div><p class="font-semibold text-brand-title">Sneha Reddy</p><p class="text-brand-body text-sm">Hyderabad</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="bg-brand-light py-24">
+    <div class="max-w-[1062px] mx-auto px-6">
+      <div class="bg-brand-bg rounded-[2rem] p-12 sm:p-16 text-center relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-72 h-72 bg-brand-accent/10 rounded-full blur-3xl"></div>
+        <div class="absolute bottom-0 left-0 w-56 h-56 bg-brand-link/10 rounded-full blur-3xl"></div>
+        <div class="relative z-10">
+          <h2 class="text-3xl sm:text-4xl lg:text-5xl font-semibold text-white tracking-tight mb-4">Ready to Step Into Tradition?</h2>
+          <p class="text-brand-muted text-lg max-w-xl mx-auto mb-8">Join 50,000+ happy customers who chose authentic Indian craftsmanship.</p>
+          <a href="#collection" class="inline-flex bg-brand-accent text-white font-semibold py-4 px-10 rounded-full btn-hover">Shop Now — Free Shipping</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="bg-brand-bg py-16 border-t border-[rgba(154,145,255,0.1)]">
+    <div class="max-w-[1346px] mx-auto px-6">
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
+        <div>
+          <div class="flex items-center gap-2 mb-4">
+            <span class="iconify text-brand-accent text-2xl" data-icon="mdi:shoe-sneaker"></span>
+            <span class="text-white text-lg font-bold">SoleKart</span>
+          </div>
+          <p class="text-brand-muted text-sm leading-relaxed mb-4">India's most trusted destination for authentic handcrafted footwear. Bringing artisanal shoes to your doorstep.</p>
+          <div class="flex gap-3">
+            <a href="#" class="w-10 h-10 glass rounded-full flex items-center justify-center text-brand-muted hover:text-white transition-colors"><span class="iconify text-lg" data-icon="mdi:instagram"></span></a>
+            <a href="#" class="w-10 h-10 glass rounded-full flex items-center justify-center text-brand-muted hover:text-white transition-colors"><span class="iconify text-lg" data-icon="mdi:facebook"></span></a>
+            <a href="#" class="w-10 h-10 glass rounded-full flex items-center justify-center text-brand-muted hover:text-white transition-colors"><span class="iconify text-lg" data-icon="mdi:twitter"></span></a>
+            <a href="#" class="w-10 h-10 glass rounded-full flex items-center justify-center text-brand-muted hover:text-white transition-colors"><span class="iconify text-lg" data-icon="mdi:youtube"></span></a>
+          </div>
+        </div>
+        <div>
+          <h4 class="text-white font-semibold mb-4">Shop</h4>
+          <ul class="space-y-2.5">
+            <li><a href="#" class="text-brand-muted text-sm hover:text-brand-link transition-colors">Juttis & Mojaris</a></li>
+            <li><a href="#" class="text-brand-muted text-sm hover:text-brand-link transition-colors">Kolhapuri Chappals</a></li>
+            <li><a href="#" class="text-brand-muted text-sm hover:text-brand-link transition-colors">Ethnic Sandals</a></li>
+            <li><a href="#" class="text-brand-muted text-sm hover:text-brand-link transition-colors">Indo-Western</a></li>
+            <li><a href="#" class="text-brand-muted text-sm hover:text-brand-link transition-colors">New Arrivals</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-white font-semibold mb-4">Help</h4>
+          <ul class="space-y-2.5">
+            <li><a href="#" class="text-brand-muted text-sm hover:text-brand-link transition-colors">Size Guide</a></li>
+            <li><a href="#" class="text-brand-muted text-sm hover:text-brand-link transition-colors">Shipping Info</a></li>
+            <li><a href="#" class="text-brand-muted text-sm hover:text-brand-link transition-colors">Returns & Exchange</a></li>
+            <li><a href="#" class="text-brand-muted text-sm hover:text-brand-link transition-colors">Track Order</a></li>
+            <li><a href="#" class="text-brand-muted text-sm hover:text-brand-link transition-colors">Contact Us</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-white font-semibold mb-4">Newsletter</h4>
+          <p class="text-brand-muted text-sm mb-4">Get 10% off your first order + exclusive drops.</p>
+          <form onsubmit="subscribeNewsletter(event)" class="flex gap-2">
+            <input type="email" placeholder="Your email" required class="flex-1 bg-[rgba(154,145,255,0.1)] border border-[rgba(201,196,255,0.2)] rounded-full px-4 py-3 text-white text-sm placeholder:text-brand-muted" />
+            <button type="submit" class="bg-brand-accent text-white px-5 py-3 rounded-full btn-hover shrink-0"><span class="iconify text-lg" data-icon="mdi:send"></span></button>
+          </form>
+        </div>
+      </div>
+      <div class="border-t border-[rgba(154,145,255,0.1)] pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <p class="text-brand-muted text-sm">© 2025 SoleKart. All rights reserved.</p>
+        <div class="flex items-center gap-4">
+          <span class="iconify text-brand-muted text-2xl" data-icon="mdi:credit-card-outline"></span>
+          <span class="iconify text-brand-muted text-2xl" data-icon="mdi:cellphone"></span>
+          <span class="iconify text-brand-muted text-2xl" data-icon="mdi:shield-lock-outline"></span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- CART SIDEBAR -->
+  <div id="cartOverlay" class="fixed inset-0 bg-black/50 z-[80] hidden" onclick="closeCart()"></div>
+  <div id="cartSidebar" class="fixed top-0 right-0 h-full w-full max-w-md bg-white z-[90] transform translate-x-full transition-transform duration-300 flex flex-col">
+    <div class="flex items-center justify-between p-6 border-b border-brand-border">
+      <h3 class="text-xl font-semibold text-brand-title">Your Cart</h3>
+      <button onclick="closeCart()" class="text-brand-body hover:text-brand-title transition-colors"><span class="iconify text-2xl" data-icon="mdi:close"></span></button>
+    </div>
+    <div id="cartItems" class="flex-1 overflow-y-auto p-6">
+      <div id="emptyCart" class="flex flex-col items-center justify-center h-full text-center">
+        <span class="iconify text-6xl text-brand-border mb-4" data-icon="mdi:cart-off"></span>
+        <p class="text-brand-body font-medium">Your cart is empty</p>
+        <p class="text-brand-body/60 text-sm mt-1">Add some beautiful shoes!</p>
+      </div>
+    </div>
+    <div id="cartFooter" class="hidden border-t border-brand-border p-6">
+      <div class="flex justify-between mb-2"><span class="text-brand-body">Subtotal</span><span id="cartSubtotal" class="font-semibold text-brand-title">₹0</span></div>
+      <div class="flex justify-between mb-2"><span class="text-brand-body">Shipping</span><span class="text-green-600 font-medium">FREE</span></div>
+      <div class="flex justify-between mb-4 text-lg"><span class="font-semibold text-brand-title">Total</span><span id="cartTotal" class="font-bold text-brand-accent">₹0</span></div>
+      <button onclick="openCheckout()" class="w-full bg-brand-accent text-white font-semibold py-4 rounded-full btn-hover">Proceed to Checkout</button>
+    </div>
+  </div>
+
+  <!-- PRODUCT DETAIL MODAL -->
+  <div id="productModal" class="fixed inset-0 z-[100] hidden">
+    <div class="modal-overlay absolute inset-0 bg-black/60" onclick="closeProductModal()"></div>
+    <div class="relative z-10 flex items-center justify-center min-h-screen p-4">
+      <div class="bg-white rounded-3xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
+        <div class="md:flex">
+          <div class="md:w-1/2">
+            <img id="modalImage" src="" alt="" class="w-full h-72 md:h-full object-cover md:rounded-l-3xl rounded-t-3xl md:rounded-tr-none" />
+          </div>
+          <div class="md:w-1/2 p-8 flex flex-col">
+            <button onclick="closeProductModal()" class="self-end text-brand-body hover:text-brand-title transition-colors mb-2"><span class="iconify text-2xl" data-icon="mdi:close"></span></button>
+            <span id="modalCategory" class="text-brand-accent text-xs font-bold uppercase tracking-wider mb-2"></span>
+            <h2 id="modalName" class="text-2xl font-semibold text-brand-title mb-2"></h2>
+            <div class="flex items-center gap-2 mb-3">
+              <div class="flex gap-0.5"><span class="iconify text-brand-star" data-icon="mdi:star"></span><span class="iconify text-brand-star" data-icon="mdi:star"></span><span class="iconify text-brand-star" data-icon="mdi:star"></span><span class="iconify text-brand-star" data-icon="mdi:star"></span><span class="iconify text-brand-star" data-icon="mdi:star-half-full"></span></div>
+              <span class="text-brand-body text-sm">(128 reviews)</span>
+            </div>
+            <p id="modalDesc" class="text-brand-body text-sm leading-relaxed mb-4"></p>
+            <div class="flex items-baseline gap-3 mb-6">
+              <span id="modalPrice" class="text-3xl font-bold text-brand-accent"></span>
+              <span id="modalOriginal" class="text-lg text-brand-body/50 line-through"></span>
+              <span id="modalDiscount" class="text-sm font-semibold text-green-600 bg-green-50 px-2 py-0.5 rounded-full"></span>
+            </div>
+            <div class="mb-4">
+              <p class="text-sm font-semibold text-brand-title mb-2">Select Size (UK)</p>
+              <div id="modalSizes" class="flex flex-wrap gap-2"></div>
+            </div>
+            <div class="flex items-center gap-4 mb-6 mt-auto">
+              <div class="flex items-center border border-brand-border rounded-full">
+                <button onclick="changeQty(-1)" class="qty-btn w-10 h-10 flex items-center justify-center rounded-l-full text-brand-body"><span class="iconify" data-icon="mdi:minus"></span></button>
+                <span id="modalQty" class="w-8 text-center font-semibold text-brand-title">1</span>
+                <button onclick="changeQty(1)" class="qty-btn w-10 h-10 flex items-center justify-center rounded-r-full text-brand-body"><span class="iconify" data-icon="mdi:plus"></span></button>
+              </div>
+              <button onclick="addToCartFromModal()" class="flex-1 bg-brand-accent text-white font-semibold py-3.5 rounded-full btn-hover flex items-center justify-center gap-2">
+                <span class="iconify" data-icon="mdi:cart-plus"></span> Add to Cart
+              </button>
+            </div>
+            <div class="flex items-center gap-4 text-xs text-brand-body/70">
+              <span class="flex items-center gap-1"><span class="iconify" data-icon="mdi:truck-delivery-outline"></span> Free Delivery</span>
+              <span class="flex items-center gap-1"><span class="iconify" data-icon="mdi:refresh"></span> 7-Day Returns</span>
+              <span class="flex items-center gap-1"><span class="iconify" data-icon="mdi:shield-check"></span> Genuine</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHECKOUT MODAL -->
+  <div id="checkoutModal" class="fixed inset-0 z-[110] hidden">
+    <div class="modal-overlay absolute inset-0 bg-black/60" onclick="closeCheckout()"></div>
+    <div class="relative z-10 flex items-center justify-center min-h-screen p-4">
+      <div class="bg-white rounded-3xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
+        <div class="p-8">
+          <div class="flex items-center justify-between mb-6">
+            <h2 class="text-2xl font-semibold text-brand-title">Checkout</h2>
+            <button onclick="closeCheckout()" class="text-brand-body hover:text-brand-title transition-colors"><span class="iconify text-2xl" data-icon="mdi:close"></span></button>
+          </div>
+          <!-- Order Summary -->
+          <div id="checkoutSummary" class="bg-brand-light rounded-2xl p-4 mb-6"></div>
+          <!-- Form -->
+          <form id="checkoutForm" onsubmit="placeOrder(event)">
+            <div class="space-y-4">
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <label class="text-sm font-medium text-brand-title mb-1 block">First Name *</label>
+                  <input type="text" required class="w-full border border-brand-border rounded-xl px-4 py-3 text-sm text-brand-title" placeholder="Rahul" />
+                </div>
+                <div>
+                  <label class="text-sm font-medium text-brand-title mb-1 block">Last Name *</label>
+                  <input type="text" required class="w-full border border-brand-border rounded-xl px-4 py-3 text-sm text-brand-title" placeholder="Sharma" />
+                </div>
+              </div>
+              <div>
+                <label class="text-sm font-medium text-brand-title mb-1 block">Email *</label>
+                <input type="email" required class="w-full border border-brand-border rounded-xl px-4 py-3 text-sm text-brand-title" placeholder="rahul@email.com" />
+              </div>
+              <div>
+                <label class="text-sm font-medium text-brand-title mb-1 block">Phone *</label>
+                <input type="tel" required pattern="[0-9]{10}" class="w-full border border-brand-border rounded-xl px-4 py-3 text-sm text-brand-title" placeholder="9876543210" />
+              </div>
+              <div>
+                <label class="text-sm font-medium text-brand-title mb-1 block">Address *</label>
+                <textarea required rows="2" class="w-full border border-brand-border rounded-xl px-4 py-3 text-sm text-brand-title resize-none" placeholder="House No, Street, Locality"></textarea>
+              </div>
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <label class="text-sm font-medium text-brand-title mb-1 block">City *</label>
+                  <input type="text" required class="w-full border border-brand-border rounded-xl px-4 py-3 text-sm text-brand-title" placeholder="Mumbai" />
+                </div>
+                <div>
+                  <label class="text-sm font-medium text-brand-title mb-1 block">PIN Code *</label>
+                  <input type="text" required pattern="[0-9]{6}" class="w-full border border-brand-border rounded-xl px-4 py-3 text-sm text-brand-title" placeholder="400001" />
+                </div>
+              </div>
+              <div>
+                <label class="text-sm font-medium text-brand-title mb-1 block">State *</label>
+                <select required class="w-full border border-brand-border rounded-xl px-4 py-3 text-sm text-brand-title bg-white">
+                  <option value="">Select State</option>
+                  <option>Andhra Pradesh</option><option>Bihar</option><option>Delhi</option><option>Goa</option><option>Gujarat</option><option>Haryana</option><option>Karnataka</option><option>Kerala</option><option>Madhya Pradesh</option><option>Maharashtra</option><option>Punjab</option><option>Rajasthan</option><option>Tamil Nadu</option><option>Telangana</option><option>Uttar Pradesh</option><option>West Bengal</option>
+                </select>
+              </div>
+              <div>
+                <label class="text-sm font-medium text-brand-title mb-3 block">Payment Method *</label>
+                <div class="space-y-2">
+                  <label class="flex items-center gap-3 border border-brand-border rounded-xl p-3 cursor-pointer hover:border-brand-accent transition-colors has-[:checked]:border-brand-accent has-[:checked]:bg-brand-light">
+                    <input type="radio" name="payment" value="cod" checked class="accent-[#6145FF]" />
+                    <span class="iconify text-xl text-brand-body" data-icon="mdi:cash"></span>
+                    <span class="text-sm font-medium text-brand-title">Cash on Delivery</span>
+                  </label>
+                  <label class="flex items-center gap-3 border border-brand-border rounded-xl p-3 cursor-pointer hover:border-brand-accent transition-colors has-[:checked]:border-brand-accent has-[:checked]:bg-brand-light">
+                    <input type="radio" name="payment" value="upi" class="accent-[#6145FF]" />
+                    <span class="iconify text-xl text-brand-body" data-icon="mdi:cellphone"></span>
+                    <span class="text-sm font-medium text-brand-title">UPI Payment</span>
+                  </label>
+                  <label class="flex items-center gap-3 border border-brand-border rounded-xl p-3 cursor-pointer hover:border-brand-accent transition-colors has-[:checked]:border-brand-accent has-[:checked]:bg-brand-light">
+                    <input type="radio" name="payment" value="card" class="accent-[#6145FF]" />
+                    <span class="iconify text-xl text-brand-body" data-icon="mdi:credit-card-outline"></span>
+                    <span class="text-sm font-medium text-brand-title">Credit/Debit Card</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+            <div class="mt-6 pt-4 border-t border-brand-border">
+              <div class="flex justify-between mb-4 text-lg"><span class="font-semibold text-brand-title">Total</span><span id="checkoutTotal" class="font-bold text-brand-accent">₹0</span></div>
+              <button type="submit" class="w-full bg-brand-accent text-white font-semibold py-4 rounded-full btn-hover flex items-center justify-center gap-2">
+                <span class="iconify" data-icon="mdi:check-circle-outline"></span> Place Order
+              </button>
+              <p class="text-center text-xs text-brand-body/60 mt-3">By placing order, you agree to our Terms & Conditions</p>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ORDER SUCCESS MODAL -->
+  <div id="successModal" class="fixed inset-0 z-[120] hidden">
+    <div class="modal-overlay absolute inset-0 bg-black/60"></div>
+    <div class="relative z-10 flex items-center justify-center min-h-screen p-4">
+      <div class="bg-white rounded-3xl max-w-sm w-full p-10 text-center">
+        <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+          <span class="iconify text-green-500 text-4xl" data-icon="mdi:check-circle"></span>
+        </div>
+        <h2 class="text-2xl font-semibold text-brand-title mb-2">Order Placed! 🎉</h2>
+        <p class="text-brand-body mb-2">Thank you for shopping with SoleKart!</p>
+        <p class="text-sm text-brand-body/70 mb-1">Order ID: <span id="orderId" class="font-semibold text-brand-title"></span></p>
+        <p class="text-sm text-brand-body/70 mb-6">Estimated delivery: 3–5 business days</p>
+        <button onclick="closeSuccess()" class="bg-brand-accent text-white font-semibold py-3 px-8 rounded-full btn-hover">Continue Shopping</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Product Data
+    const products = [
+      { id: 1, name: "Royal Punjabi Jutti", category: "jutti", price: 1499, original: 2499, discount: "40% OFF", image: "https://images.unsplash.com/photo-1603808033192-082d6919d3e1?w=500&h=500&fit=crop", desc: "Hand-embroidered Punjabi jutti with golden thread work. Perfect for weddings and festive occasions. Soft cushioned sole for all-day comfort.", sizes: [6,7,8,9,10,11], rating: 4.8 },
+      { id: 2, name: "Jaipuri Mojari", category: "jutti", price: 1299, original: 1999, discount: "35% OFF", image: "https://images.unsplash.com/photo-1605812860427-4024433a70fd?w=500&h=500&fit=crop", desc: "Traditional Jaipuri mojari with mirror work and colorful thread embroidery. Crafted by artisans from the Pink City.", sizes: [6,7,8,9,10], rating: 4.7 },
+      { id: 3, name: "Classic Kolhapuri", category: "kolhapuri", price: 999, original: 1599, discount: "37% OFF", image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500&h=500&fit=crop", desc: "Authentic Kolhapuri chappal made from vegetable-tanned leather. Ages beautifully with time. A true Indian classic.", sizes: [7,8,9,10,11,12], rating: 4.9 },
+      { id: 4, name: "Kolhapuri T-Bar", category: "kolhapuri", price: 1199, original: 1899, discount: "36% OFF", image: "https://images.unsplash.com/photo-1600185365926-3a2ce3cdb9eb?w=500&h=500&fit=crop", desc: "Modern T-bar design with traditional Kolhapuri craftsmanship. Premium leather with cushioned insole.", sizes: [6,7,8,9,10], rating: 4.6 },
+      { id: 5, name: "Bridal Sandal Gold", category: "sandal", price: 2499, original: 3999, discount: "37% OFF", image: "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=500&h=500&fit=crop", desc: "Stunning gold bridal sandal with crystal embellishments. Height-enhancing platform sole. Make your special day unforgettable.", sizes: [5,6,7,8,9], rating: 4.9 },
+      { id: 6, name: "Ethnic Block Heel", category: "sandal", price: 1799, original: 2799, discount: "35% OFF", image: "https://images.unsplash.com/photo-1543163521-1bf539c55dd2?w=500&h=500&fit=crop", desc: "Comfortable block heel with ethnic embroidery. Ideal for festivals, pujas, and family gatherings.", sizes: [5,6,7,8,9,10], rating: 4.5 },
+      { id: 7, name: "Indo-Western Sneaker", category: "sneaker", price: 2199, original: 3499, discount: "37% OFF", image: "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=500&h=500&fit=crop", desc: "Where Indian craftsmanship meets modern sneaker culture. Hand-woven upper with cushioned sole. Street-ready style.", sizes: [7,8,9,10,11], rating: 4.8 },
+      { id: 8, name: "Fusion Loafer", category: "sneaker", price: 1899, original: 2999, discount: "36% OFF", image: "https://images.unsplash.com/photo-1614252235316-8c857d38b5f4?w=500&h=500&fit=crop", desc: "Premium leather loafer with subtle Indian motif embroidery. Perfect for office-to-evening transitions.", sizes: [7,8,9,10,11,12], rating: 4.7 },
+      { id: 9, name: "Rajasthani Jutti Red", category: "jutti", price: 1599, original: 2599, discount: "38% OFF", image: "https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=500&h=500&fit=crop", desc: "Vibrant red Rajasthani jutti with intricate Kundan work. Each pair takes 3 days to craft by hand.", sizes: [6,7,8,9,10], rating: 4.8 },
+    ];
+
+    let cart = [];
+    let currentProduct = null;
+    let selectedSize = null;
+    let modalQty = 1;
+
+    // Render Products
+    function renderProducts(filter = 'all') {
+      const grid = document.getElementById('productsGrid');
+      const filtered = filter === 'all' ? products : products.filter(p => p.category === filter);
+      grid.innerHTML = filtered.map(p => `
+        <div class="bg-white rounded-3xl overflow-hidden card-shadow card-hover border border-brand-border group" data-category="${p.category}">
+          <div class="relative overflow-hidden h-64 cursor-pointer" onclick="openProductModal(${p.id})">
+            <img src="${p.image}" alt="${p.name}" class="w-full h-full object-cover img-hover" />
+            <div class="absolute top-4 left-4"><span class="bg-green-500 text-white text-xs font-bold px-3 py-1 rounded-full">${p.discount}</span></div>
+            <div class="absolute inset-0 bg-brand-bg/0 group-hover:bg-brand-bg/20 transition-colors flex items-center justify-center">
+              <span class="bg-white text-brand-title font-semibold py-2.5 px-6 rounded-full opacity-0 group-hover:opacity-100 transition-opacity text-sm shadow-lg">Quick View</span>
+            </div>
+          </div>
+          <div class="p-6">
+            <span class="text-brand-accent text-xs font-bold uppercase tracking-wider">${p.category}</span>
+            <h3 class="text-lg font-semibold text-brand-title mt-1 mb-2 cursor-pointer hover:text-brand-accent transition-colors" onclick="openProductModal(${p.id})">${p.name}</h3>
+            <div class="flex items-center gap-1 mb-3">
+              <span class="iconify text-brand-star text-sm" data-icon="mdi:star"></span>
+              <span class="text-sm font-medium text-brand-title">${p.rating}</span>
+              <span class="text-xs text-brand-body/60">(128)</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <div class="flex items-baseline gap-2">
+                <span class="text-xl font-bold text-brand-accent">₹${p.price.toLocaleString()}</span>
+                <span class="text-sm text-brand-body/40 line-through">₹${p.original.toLocaleString()}</span>
+              </div>
+              <button onclick="quickAdd(${p.id})" class="w-10 h-10 bg-brand-light hover:bg-brand-accent hover:text-white text-brand-accent rounded-full flex items-center justify-center transition-all">
+                <span class="iconify text-lg" data-icon="mdi:cart-plus"></span>
+              </button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function filterProducts(filter) {
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        if (btn.dataset.filter === filter) {
+          btn.className = 'filter-btn active-filter bg-brand-accent text-white font-semibold py-2.5 px-6 rounded-full text-sm transition-all';
+        } else {
+          btn.className = 'filter-btn bg-white text-brand-body font-semibold py-2.5 px-6 rounded-full text-sm border border-brand-border hover:border-brand-accent transition-all';
+        }
+      });
+      renderProducts(filter);
+      document.getElementById('collection')?.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // Product Modal
+    function openProductModal(id) {
+      currentProduct = products.find(p => p.id === id);
+      selectedSize = null;
+      modalQty = 1;
+      document.getElementById('modalImage').src = currentProduct.image;
+      document.getElementById('modalName').textContent = currentProduct.name;
+      document.getElementById('modalCategory').textContent = currentProduct.category;
+      document.getElementById('modalDesc').textContent = currentProduct.desc;
+      document.getElementById('modalPrice').textContent = '₹' + currentProduct.price.toLocaleString();
+      document.getElementById('modalOriginal').textContent = '₹' + currentProduct.original.toLocaleString();
+      document.getElementById('modalDiscount').textContent = currentProduct.discount;
+      document.getElementById('modalQty').textContent = '1';
+      document.getElementById('modalSizes').innerHTML = currentProduct.sizes.map(s =>
+        `<button onclick="selectSize(${s}, this)" class="size-btn w-10 h-10 border border-brand-border rounded-xl text-sm font-medium text-brand-body hover:border-brand-accent transition-colors">${s}</button>`
+      ).join('');
+      document.getElementById('productModal').classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeProductModal() {
+      document.getElementById('productModal').classList.add('hidden');
+      document.body.style.overflow = '';
+    }
+
+    function selectSize(size, el) {
+      selectedSize = size;
+      document.querySelectorAll('#modalSizes .size-btn').forEach(b => b.classList.remove('active'));
+      el.classList.add('active');
+    }
+
+    function changeQty(delta) {
+      modalQty = Math.max(1, Math.min(10, modalQty + delta));
+      document.getElementById('modalQty').textContent = modalQty;
+    }
+
+    function addToCartFromModal() {
+      if (!selectedSize) { showToast('Please select a size', 'warning'); return; }
+      const existing = cart.find(item => item.id === currentProduct.id && item.size === selectedSize);
+      if (existing) { existing.qty += modalQty; }
+      else { cart.push({ id: currentProduct.id, name: currentProduct.name, price: currentProduct.price, image: currentProduct.image, size: selectedSize, qty: modalQty }); }
+      updateCartUI();
+      closeProductModal();
+      showToast(`${currentProduct.name} added to cart!`, 'success');
+    }
+
+    function quickAdd(id) {
+      const p = products.find(pr => pr.id === id);
+      const size = p.sizes[Math.floor(p.sizes.length / 2)];
+      const existing = cart.find(item => item.id === p.id && item.size === size);
+      if (existing) { existing.qty += 1; }
+      else { cart.push({ id: p.id, name: p.name, price: p.price, image: p.image, size: size, qty: 1 }); }
+      updateCartUI();
+      showToast(`${p.name} added to cart!`, 'success');
+    }
+
+    // Cart
+    function updateCartUI() {
+      const count = cart.reduce((sum, item) => sum + item.qty, 0);
+      const badge = document.getElementById('cartCount');
+      if (count > 0) { badge.classList.remove('hidden'); badge.textContent = count; }
+      else { badge.classList.add('hidden'); }
+
+      const container = document.getElementById('cartItems');
+      const empty = document.getElementById('emptyCart');
+      const footer = document.getElementById('cartFooter');
+
+      if (cart.length === 0) {
+        container.innerHTML = `<div class="flex flex-col items-center justify-center h-full text-center">
+          <span class="iconify text-6xl text-brand-border mb-4" data-icon="mdi:cart-off"></span>
+          <p class="text-brand-body font-medium">Your cart is empty</p>
+          <p class="text-brand-body/60 text-sm mt-1">Add some beautiful shoes!</p></div>`;
+        footer.classList.add('hidden');
+        return;
+      }
+
+      footer.classList.remove('hidden');
+      let subtotal = 0;
+      container.innerHTML = cart.map(item => {
+        subtotal += item.price * item.qty;
+        return `<div class="flex gap-4 mb-4 pb-4 border-b border-brand-border last:border-0">
+          <img src="${item.image}" alt="${item.name}" class="w-20 h-20 rounded-xl object-cover" />
+          <div class="flex-1">
+            <h4 class="font-semibold text-brand-title text-sm">${item.name}</h4>
+            <p class="text-xs text-brand-body">Size: UK ${item.size}</p>
+            <div class="flex items-center justify-between mt-2">
+              <span class="font-bold text-brand-accent">₹${(item.price * item.qty).toLocaleString()}</span>
+              <div class="flex items-center gap-2">
+                <button onclick="updateCartQty(${item.id}, ${item.size}, -1)" class="w-7 h-7 border border-brand-border rounded-lg flex items-center justify-center text-brand-body hover:bg-brand-light text-xs"><span class="iconify" data-icon="mdi:minus"></span></button>
+                <span class="text-sm font-medium text-brand-title w-5 text-center">${item.qty}</span>
+                <button onclick="updateCartQty(${item.id}, ${item.size}, 1)" class="w-7 h-7 border border-brand-border rounded-lg flex items-center justify-center text-brand-body hover:bg-brand-light text-xs"><span class="iconify" data-icon="mdi:plus"></span></button>
+                <button onclick="removeFromCart(${item.id}, ${item.size})" class="w-7 h-7 flex items-center justify-center text-red-400 hover:text-red-600 ml-1"><span class="iconify" data-icon="mdi:delete-outline"></span></button>
+              </div>
+            </div>
+          </div>
+        </div>`;
+      }).join('');
+
+      document.getElementById('cartSubtotal').textContent = '₹' + subtotal.toLocaleString();
+      document.getElementById('cartTotal').textContent = '₹' + subtotal.toLocaleString();
+    }
+
+    function updateCartQty(id, size, delta) {
+      const item = cart.find(i => i.id === id && i.size === size);
+      if (item) { item.qty += delta; if (item.qty <= 0) cart = cart.filter(i => !(i.id === id && i.size === size)); }
+      updateCartUI();
+    }
+
+    function removeFromCart(id, size) {
+      cart = cart.filter(i => !(i.id === id && i.size === size));
+      updateCartUI();
+    }
+
+    function openCart() {
+      document.getElementById('cartOverlay').classList.remove('hidden');
+      document.getElementById('cartSidebar').style.transform = 'translateX(0)';
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeCart() {
+      document.getElementById('cartOverlay').classList.add('hidden');
+      document.getElementById('cartSidebar').style.transform = 'translateX(100%)';
+      document.body.style.overflow = '';
+    }
+
+    // Checkout
+    function openCheckout() {
+      if (cart.length === 0) return;
+      closeCart();
+      const total = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+      document.getElementById('checkoutTotal').textContent = '₹' + total.toLocaleString();
+      document.getElementById('checkoutSummary').innerHTML = `
+        <h4 class="font-semibold text-brand-title text-sm mb-2">Order Summary (${cart.reduce((s,i)=>s+i.qty,0)} items)</h4>
+        ${cart.map(i => `<div class="flex justify-between text-sm mb-1"><span class="text-brand-body">${i.name} (UK ${i.size}) × ${i.qty}</span><span class="text-brand-title font-medium">₹${(i.price*i.qty).toLocaleString()}</span></div>`).join('')}
+      `;
+      document.getElementById('checkoutModal').classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeCheckout() {
+      document.getElementById('checkoutModal').classList.add('hidden');
+      document.body.style.overflow = '';
+    }
+
+    function placeOrder(e) {
+      e.preventDefault();
+      closeCheckout();
+      const orderId = 'SK' + Date.now().toString().slice(-8);
+      document.getElementById('orderId').textContent = orderId;
+      document.getElementById('successModal').classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+      cart = [];
+      updateCartUI();
+    }
+
+    function closeSuccess() {
+      document.getElementById('successModal').classList.add('hidden');
+      document.body.style.overflow = '';
+    }
+
+    // Toast
+    function showToast(message, type = 'success') {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      const icon = type === 'success' ? 'mdi:check-circle' : 'mdi:alert-circle';
+      const color = type === 'success' ? 'text-green-500' : 'text-amber-500';
+      toast.className = 'toast flex items-center gap-3 bg-white rounded-xl px-5 py-4 shadow-lg border border-brand-border';
+      toast.innerHTML = `<span class="iconify ${color} text-xl" data-icon="${icon}"></span><span class="text-brand-title text-sm font-medium">${message}</span>`;
+      container.appendChild(toast);
+      setTimeout(() => toast.remove(), 2700);
+    }
+
+    // Mobile Menu
+    function toggleMobileMenu() {
+      document.getElementById('mobileMenu').classList.toggle('hidden');
+    }
+
+    // Newsletter
+    function subscribeNewsletter(e) {
+      e.preventDefault();
+      showToast('Subscribed successfully! Check your email.', 'success');
+      e.target.reset();
+    }
+
+    // Init
+    renderProducts();
+  </script>
+</body>
+</html>
